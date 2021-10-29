@@ -2,11 +2,10 @@ import React, { useState } from 'react';
 import Grid from '@mui/material/Grid';
 import Radio from '@mui/material/Radio';
 import TextField from '@mui/material/TextField';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Button from '@mui/material/Button';
 import Autocomplete from '@mui/material/Autocomplete';
+import update from 'immutability-helper';
 
 const basicObjectStructure = {
   SelectedRow: false,
@@ -14,34 +13,62 @@ const basicObjectStructure = {
   parameterType: 'variable',
   constantValue: '',
   patameterValue: { id: 'age', label: 'Age' },
-  operatorValue: { type: 'and', value: 'And' },
+  operatorValue: { value: 'and', label: 'And' },
 };
 const LogicBuilderComponent = (props) => {
-  let [logicDesign, setLogicDesign] = useState([
-    basicObjectStructure,
-    {
-      SelectedRow: true,
-      groupId: 1,
-      parameterType: 'constant',
-      constantValue: 'hard coded',
-      patameterValue: { id: 'age', label: 'Age' },
-      operatorValue: { type: 'and', value: 'And' },
-    },
-    basicObjectStructure,
-  ]);
+  let [logicDesign, setLogicDesign] = useState([basicObjectStructure]);
 
   const parameterList = [
     { id: 'age', label: 'Age' },
     { id: 'gender', label: 'Gender' },
     { id: 'mem', label: 'Average Haemoglobin' },
   ];
-  const operatorList = [{ type: 'and', value: 'And' }];
+  const operatorList = [
+    { category: 'Relational operators', label: 'Less than', value: '<' },
+    {
+      category: 'Relational operators',
+      label: 'Less than or equal to',
+      value: '<=',
+    },
+    { category: 'Relational operators', label: 'Greater than', value: '>' },
+    {
+      category: 'Relational operators',
+      label: 'Greater than or equal to',
+      value: '>=',
+    },
+    { category: 'Relational operators', label: 'Equal to', value: '=' },
+    { category: 'Relational operators', label: 'Not equal to', value: '!=' },
+    {
+      category: 'Arithmetic operators',
+      label: 'DaysBetween',
+      value: 'DaysBetween',
+    },
+    {
+      category: 'Arithmetic operators',
+      label: 'YearsBetween',
+      value: 'YearsBetween',
+    },
+    {
+      category: 'Arithmetic operators',
+      label: 'Find in previous repeat groups',
+      value: 'Find in previous repeat groups',
+    },
+    {
+      category: 'Arithmetic operators',
+      label: 'Go to repeat group and retrieve field value',
+      value: 'Go to repeat group and retrieve field value',
+    },
+    { category: 'Arithmetic operators', label: 'Add', value: '+' },
+    { category: 'Arithmetic operators', label: 'Subtract', value: '-' },
+  ];
 
   let onClickAddRow = () => {
     let arr = [...logicDesign];
+    let groupId = Number(arr[logicDesign.length - 1].groupId) + 1;
+    let obj = { ...basicObjectStructure, groupId };
     let idx = arr.findIndex((obj) => obj.SelectedRow);
     idx = idx == -1 ? arr.length : idx + 1;
-    arr.splice(idx, 0, basicObjectStructure);
+    arr.splice(idx, 0, obj);
     setLogicDesign(arr);
     console.log(arr);
   };
@@ -70,8 +97,6 @@ const LogicBuilderComponent = (props) => {
     console.log(v, index);
     let arr = [];
     logicDesign.forEach((obj, i) => {
-      console.log(i);
-      console.log(index);
       let tmpobj = { ...obj };
       if (i === index) {
         tmpobj['SelectedRow'] = true;
@@ -84,19 +109,48 @@ const LogicBuilderComponent = (props) => {
     setLogicDesign(arr);
   };
 
-  let handleSelectTypeVariable = (e, v, index) => {
+  let handleParameterType = (e, v, index) => {
     console.log(v, index);
+    logicDesign = update(logicDesign, {
+      [index]: { parameterType: { $set: v } },
+    });
+    setLogicDesign(logicDesign);
   };
 
-  let handleSelectTypeConstant = (e, v, index) => {
-    console.log(v, index);
+  let onChangeConstantValue = (e, currentIndex) => {
+    logicDesign = update(logicDesign, {
+      [currentIndex]: { constantValue: { $set: e.target.value } },
+    });
+    setLogicDesign(logicDesign);
   };
-  let onChangeConstantValue = () => {};
-  let onChangeGrouiId = (e, idx) => {
-    console.log(e);
-    console.log('value=', e.target.value);
-    console.log('index=', idx);
+
+  let onChangeGrouiId = (e, index) => {
+    let updateCondition = true;
+    let value = Number(e.target.value);
+    console.log(typeof value);
+    let previousValue = logicDesign[index - 1]
+      ? logicDesign[index - 1].groupId
+      : 0;
+    let upcomingValue = logicDesign[index + 1]
+      ? logicDesign[index + 1].groupId
+      : value;
+    console.log(previousValue, '----', value, '---', upcomingValue);
+    console.log(previousValue <= value <= upcomingValue);
+    if (updateCondition && logicDesign.length - 1 == index) {
+      updateCondition =
+        previousValue <= value &&
+        (value - previousValue == 1 || value - previousValue == 0);
+    } else {
+      updateCondition = previousValue <= value && value <= upcomingValue;
+    }
+    if (updateCondition) {
+      logicDesign = update(logicDesign, {
+        [index]: { groupId: { $set: e.target.value } },
+      });
+      setLogicDesign(logicDesign);
+    }
   };
+
   return (
     <div>
       <Grid container spacing={2}>
@@ -142,7 +196,9 @@ const LogicBuilderComponent = (props) => {
                   control={
                     <Radio
                       checked={ldObj.parameterType === 'variable'}
-                      onChange={(e, v) => handleSelectTypeVariable(e, v, index)}
+                      onChange={(e, v) =>
+                        handleParameterType(e, 'variable', index)
+                      }
                     />
                   }
                   id={'Variable-' + index}
@@ -154,14 +210,16 @@ const LogicBuilderComponent = (props) => {
                   control={
                     <Radio
                       checked={ldObj.parameterType === 'constant'}
-                      onChange={(e, v) => handleSelectTypeConstant(e, v, index)}
+                      onChange={(e) =>
+                        handleParameterType(e, 'constant', index)
+                      }
                     />
                   }
                   id={'constant-' + index}
                   label="constant"
                 />
               </Grid>
-              <Grid item xs={3} key={index}>
+              <Grid item xs={2.5} key={index}>
                 {ldObj.parameterType === 'variable' ? (
                   <Autocomplete
                     disablePortal
@@ -175,6 +233,7 @@ const LogicBuilderComponent = (props) => {
                   />
                 ) : (
                   <TextField
+                    fullWidth
                     size="small"
                     variant="outlined"
                     id={'variable-value-' + index}
@@ -183,14 +242,14 @@ const LogicBuilderComponent = (props) => {
                   />
                 )}
               </Grid>
-              <Grid item xs={2}>
+              <Grid item xs={2.5}>
                 <Autocomplete
                   disablePortal
                   disableClearable
                   id={'operator-' + index}
                   options={operatorList}
                   size="small"
-                  getOptionLabel={(option) => option.value}
+                  getOptionLabel={(option) => option.label}
                   value={ldObj.operatorValue}
                   renderInput={(params) => <TextField {...params} />}
                 />
@@ -199,13 +258,14 @@ const LogicBuilderComponent = (props) => {
           );
         })}
       </Grid>
-
-      <Button variant="contained" onClick={onClickAddRow}>
-        Add row
-      </Button>
-      <Button variant="contained" onClick={onClickRemoveRow}>
-        Delete Row
-      </Button>
+      <div style={{ position: 'absolute', bottom: 0, right: 0 }}>
+        <Button size="small" variant="contained" onClick={onClickAddRow}>
+          Add row
+        </Button>
+        <Button size="small" variant="contained" onClick={onClickRemoveRow}>
+          Delete Row
+        </Button>
+      </div>
     </div>
   );
 };
