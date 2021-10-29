@@ -64,7 +64,7 @@ const LogicBuilderComponent = (props) => {
 
   let onClickAddRow = () => {
     let arr = [...logicDesign];
-    let groupId = Number(arr[logicDesign.length - 1].groupId) + 1;
+    let groupId = arr[logicDesign.length - 1].groupId;
     let obj = { ...basicObjectStructure, groupId };
     let idx = arr.findIndex((obj) => obj.SelectedRow);
     idx = idx == -1 ? arr.length : idx + 1;
@@ -150,7 +150,12 @@ const LogicBuilderComponent = (props) => {
       setLogicDesign(logicDesign);
     }
   };
-
+  let onChangeOperator = (e, value, index) => {
+    logicDesign = update(logicDesign, {
+      [index]: { operatorValue: { $set: value } },
+    });
+    setLogicDesign(logicDesign);
+  };
   return (
     <div>
       <Grid container spacing={2}>
@@ -243,16 +248,21 @@ const LogicBuilderComponent = (props) => {
                 )}
               </Grid>
               <Grid item xs={2.5}>
-                <Autocomplete
-                  disablePortal
-                  disableClearable
-                  id={'operator-' + index}
-                  options={operatorList}
-                  size="small"
-                  getOptionLabel={(option) => option.label}
-                  value={ldObj.operatorValue}
-                  renderInput={(params) => <TextField {...params} />}
-                />
+                {logicDesign.length - 1 !== index ? (
+                  <Autocomplete
+                    disablePortal
+                    disableClearable
+                    id={'operator-' + index}
+                    options={operatorList}
+                    size="small"
+                    getOptionLabel={(option) => option.label}
+                    value={ldObj.operatorValue}
+                    onChange={(e, v) => onChangeOperator(e, v, index)}
+                    renderInput={(params) => <TextField {...params} />}
+                  />
+                ) : (
+                  <></>
+                )}
               </Grid>
             </>
           );
