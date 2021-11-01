@@ -16,7 +16,9 @@ const basicObjectStructure = {
   operatorValue: { value: 'and', label: 'And' },
 };
 const LogicBuilderComponent = (props) => {
-  let [logicDesign, setLogicDesign] = useState([{...basicObjectStructure,SelectedRow:true}]);
+  let [logicDesign, setLogicDesign] = useState([
+    { ...basicObjectStructure, SelectedRow: true },
+  ]);
 
   const parameterList = [
     { id: 'age', label: 'Age' },
@@ -123,6 +125,12 @@ const LogicBuilderComponent = (props) => {
     });
     setLogicDesign(logicDesign);
   };
+  let onChangeParameter = (e, value, currentIndex) => {
+    logicDesign = update(logicDesign, {
+      [currentIndex]: { patameterValue: { $set: value } },
+    });
+    setLogicDesign(logicDesign);
+  };
 
   let onChangeGrouiId = (e, index) => {
     let updateCondition = true;
@@ -186,7 +194,7 @@ const LogicBuilderComponent = (props) => {
                   // value={index}
                 />
               </Grid>
-              <Grid item xs={2} key={index}>
+              <Grid item xs={1} key={index}>
                 <TextField
                   size="small"
                   variant="outlined"
@@ -224,7 +232,7 @@ const LogicBuilderComponent = (props) => {
                   label="constant"
                 />
               </Grid>
-              <Grid item xs={2.5} key={index}>
+              <Grid item xs={3} key={index}>
                 {ldObj.parameterType === 'variable' ? (
                   <Autocomplete
                     disablePortal
@@ -234,6 +242,7 @@ const LogicBuilderComponent = (props) => {
                     size="small"
                     value={ldObj.patameterValue}
                     getOptionLabel={(option) => option.label}
+                    onChange={(e, v) => onChangeParameter(e, v, index)}
                     renderInput={(params) => <TextField {...params} />}
                   />
                 ) : (
@@ -247,7 +256,7 @@ const LogicBuilderComponent = (props) => {
                   />
                 )}
               </Grid>
-              <Grid item xs={2.5}>
+              <Grid item xs={3}>
                 {logicDesign.length - 1 !== index ? (
                   <Autocomplete
                     disablePortal
