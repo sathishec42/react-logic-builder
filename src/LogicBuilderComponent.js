@@ -26,42 +26,108 @@ const LogicBuilderComponent = (props) => {
     { id: 'mem', label: 'Average Haemoglobin' },
   ];
   const operatorList = [
-    { category: 'Relational operators', label: 'Less than', value: '<' },
     {
       category: 'Relational operators',
+      operatorGroup: 'relational',
+      label: 'Less than',
+      value: '<',
+    },
+    {
+      category: 'Relational operators',
+      operatorGroup: 'relational',
       label: 'Less than or equal to',
       value: '<=',
     },
-    { category: 'Relational operators', label: 'Greater than', value: '>' },
     {
       category: 'Relational operators',
+      operatorGroup: 'relational',
+      label: 'Greater than',
+      value: '>',
+    },
+    {
+      category: 'Relational operators',
+      operatorGroup: 'relational',
       label: 'Greater than or equal to',
       value: '>=',
     },
-    { category: 'Relational operators', label: 'Equal to', value: '=' },
-    { category: 'Relational operators', label: 'Not equal to', value: '!=' },
+    {
+      category: 'Relational operators',
+      operatorGroup: 'relational',
+      label: 'Not equal to',
+      value: '!=',
+    },
     {
       category: 'Arithmetic operators',
+      operatorGroup: 'arithmetic',
       label: 'DaysBetween',
       value: 'DaysBetween',
     },
     {
       category: 'Arithmetic operators',
+      operatorGroup: 'arithmetic',
       label: 'YearsBetween',
       value: 'YearsBetween',
     },
     {
       category: 'Arithmetic operators',
+      operatorGroup: 'arithmetic',
       label: 'Find in previous repeat groups',
       value: 'Find in previous repeat groups',
     },
     {
       category: 'Arithmetic operators',
+      operatorGroup: 'arithmetic',
       label: 'Go to repeat group and retrieve field value',
       value: 'Go to repeat group and retrieve field value',
     },
-    { category: 'Arithmetic operators', label: 'Add', value: '+' },
-    { category: 'Arithmetic operators', label: 'Subtract', value: '-' },
+    {
+      category: 'Arithmetic operators',
+      operatorGroup: 'arithmetic',
+      label: 'Add',
+      value: '+',
+    },
+    {
+      category: 'Arithmetic operators',
+      operatorGroup: 'arithmetic',
+      label: 'Subtract',
+      value: '-',
+    },
+    {
+      category: 'Logical operators',
+      operatorGroup: 'logical',
+      label: 'AND',
+      value: 'and',
+    },
+    {
+      category: 'Logical operators',
+      operatorGroup: 'logical',
+      label: 'OR',
+      value: 'or',
+    },
+    {
+      category: 'Logical operators',
+      operatorGroup: 'logical',
+      label: 'NAND',
+      value: 'nand',
+    },
+    {
+      category: 'Logical operators',
+      operatorGroup: 'logical',
+      label: 'NOR',
+      value: 'nor',
+    },
+    {
+      category: 'Logical operators',
+      operatorGroup: 'logical',
+      label: 'XOR',
+      value: 'xor',
+    },
+    {
+      category: 'Logical operators',
+      operatorGroup: 'logical',
+      label: 'XNOR',
+      value: 'xnor',
+    },
   ];
 
   let onClickAddRow = () => {
@@ -264,6 +330,7 @@ const LogicBuilderComponent = (props) => {
                     id={'operator-' + index}
                     options={operatorList}
                     size="small"
+                    groupBy={(option) => option.category}
                     getOptionLabel={(option) => option.label}
                     value={ldObj.operatorValue}
                     onChange={(e, v) => onChangeOperator(e, v, index)}
