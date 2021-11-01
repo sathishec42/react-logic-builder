@@ -16,7 +16,7 @@ const basicObjectStructure = {
   operatorValue: { value: 'and', label: 'And' },
 };
 const LogicBuilderComponent = (props) => {
-  let [logicDesign, setLogicDesign] = useState([basicObjectStructure]);
+  let [logicDesign, setLogicDesign] = useState([{...basicObjectStructure,SelectedRow:true}]);
 
   const parameterList = [
     { id: 'age', label: 'Age' },
