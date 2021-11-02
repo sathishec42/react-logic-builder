@@ -7,13 +7,51 @@ import Button from '@mui/material/Button';
 import Autocomplete from '@mui/material/Autocomplete';
 import update from 'immutability-helper';
 
+const validateOperatorParing = (aRR) => {
+  let aRRLength = aRR.length;
+  // let validateAbove=true;
+  // let validateBelow=true;
+  aRR.forEach((obj, index) => {
+    let operator = obj.operatorValue;
+    let operatorGroup = obj.operatorGroup;
+    if (index === 0) {
+      // no validation required
+    } else if (index === 1) {
+      // no validation required
+    } else if (index === 2) {
+      // no validation required
+    } else if (index > 2) {
+      if (index === 0) {
+        //validate only below
+        //validate arithmetic below
+        //validate relational below
+        //validate logical below
+      }
+      if (index === aRRLength - 1) {
+        //validate only above
+        //validate arithmetic above
+        //validate relational above
+        //validate logical above
+      }
+      if (index !== aRRLength - 1 && index !== 0) {
+        //validate both above and below
+        //validate arithmetic above and below
+        //validate relational above and below
+        //validate logical above and below
+      }
+    }
+  });
+
+  return aRR;
+};
+
 const basicObjectStructure = {
   SelectedRow: false,
   groupId: 1,
   parameterType: 'variable',
   constantValue: '',
   patameterValue: { id: 'age', label: 'Age' },
-  operatorValue: { value: 'and', label: 'And' },
+  operatorValue: { value: 'and', label: 'And', errorOperator: true },
 };
 const LogicBuilderComponent = (props) => {
   let [logicDesign, setLogicDesign] = useState([
@@ -31,78 +69,91 @@ const LogicBuilderComponent = (props) => {
       operatorGroup: 'relational',
       label: 'Less than',
       value: '<',
+      errorOperator: false,
     },
     {
       category: 'Relational operators',
       operatorGroup: 'relational',
       label: 'Less than or equal to',
       value: '<=',
+      errorOperator: false,
     },
     {
       category: 'Relational operators',
       operatorGroup: 'relational',
       label: 'Greater than',
       value: '>',
+      errorOperator: false,
     },
     {
       category: 'Relational operators',
       operatorGroup: 'relational',
       label: 'Greater than or equal to',
       value: '>=',
+      errorOperator: false,
     },
     {
       category: 'Relational operators',
       operatorGroup: 'relational',
       label: 'Not equal to',
       value: '!=',
+      errorOperator: false,
     },
     {
       category: 'Arithmetic operators',
       operatorGroup: 'arithmetic',
       label: 'DaysBetween',
       value: 'DaysBetween',
+      errorOperator: false,
     },
     {
       category: 'Arithmetic operators',
       operatorGroup: 'arithmetic',
       label: 'YearsBetween',
       value: 'YearsBetween',
+      errorOperator: false,
     },
     {
       category: 'Arithmetic operators',
       operatorGroup: 'arithmetic',
       label: 'Find in previous repeat groups',
       value: 'Find in previous repeat groups',
+      errorOperator: false,
     },
     {
       category: 'Arithmetic operators',
       operatorGroup: 'arithmetic',
       label: 'Go to repeat group and retrieve field value',
       value: 'Go to repeat group and retrieve field value',
+      errorOperator: false,
     },
     {
       category: 'Arithmetic operators',
       operatorGroup: 'arithmetic',
       label: 'Add',
       value: '+',
+      errorOperator: false,
     },
     {
       category: 'Arithmetic operators',
       operatorGroup: 'arithmetic',
       label: 'Subtract',
       value: '-',
+      errorOperator: false,
     },
     {
       category: 'Logical operators',
       operatorGroup: 'logical',
       label: 'AND',
       value: 'and',
+      errorOperator: false,
     },
     {
       category: 'Logical operators',
       operatorGroup: 'logical',
       label: 'OR',
       value: 'or',
+      errorOperator: false,
     },
     {
       category: 'Logical operators',
@@ -334,7 +385,13 @@ const LogicBuilderComponent = (props) => {
                     getOptionLabel={(option) => option.label}
                     value={ldObj.operatorValue}
                     onChange={(e, v) => onChangeOperator(e, v, index)}
-                    renderInput={(params) => <TextField {...params} />}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        error={ldObj.operatorValue.errorOperator}
+                        label={ldObj.operatorValue.errorOperator ? 'Error' : ''}
+                      />
+                    )}
                   />
                 ) : (
                   <></>
