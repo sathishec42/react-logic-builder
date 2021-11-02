@@ -19,54 +19,80 @@ const validateOperatorParing = (aRR) => {
   console.log('validation ARR=', aRR);
   let returnArr = [];
   let aRRLength = aRR.length;
-  // let validateAbove=true;
-  // let validateBelow=true;
+  let aboveOperatorGroup = '';
+  let belowOperatorGroup = '';
   aRR.forEach((obj, index) => {
     let validatedObj = { ...obj };
     console.log('validatedObj=', validatedObj);
     let error = false;
-    let aboveOperatorGroup = '';
     let currentOperatorGroup = obj.operatorValue.operatorGroup;
-    let belowOperatorGroup = '';
-    error = true;
-    if (index === 0) {
-      // no validation required
-    } else if (index === 1) {
-      // no validation required
-    } else if (index === 2) {
-      // no validation required
-    } else if (index > 2) {
+    //validate arithmetic below
+    if (aRRLength > 2) {
+      alert(index)
       if (index === 0) {
-        //validate only below
-        belowOperatorGroup = aRR[index + 1].operatorValue.operatorGroup;
-        //validate arithmetic below
-        error =
-          error ||
-          operatorTable.arithmeticBelow.findIndex(currentOperatorGroup) != -1;
-        //validate relational below
-        error =
-          error ||
-          operatorTable.operationalBelow.findIndex(currentOperatorGroup) != -1;
-        //validate logical below
-        error =
-          error ||
-          operatorTable.logicalBelow.findIndex(currentOperatorGroup) != -1;
-      }
-      if (index === aRRLength - 1) {
+        alert('validate only below');
+        if(currentOperatorGroup==="arithmetic"){
+
+        }else if(currentOperatorGroup==="relational"){
+
+        }else if(currentOperatorGroup==="logical"){
+
+        }
+      } else if (index === aRRLength - 2) {
+        alert('validate only above');
         //validate only above
-        aboveOperatorGroup = aRR[index - 1].operatorValue.operatorGroup;
         //validate arithmetic above
         //validate relational above
         //validate logical above
-      }
-      if (index !== aRRLength - 1 && index !== 0) {
+        if(currentOperatorGroup==="arithmetic"){
+
+        }else if(currentOperatorGroup==="relational"){
+
+        }else if(currentOperatorGroup==="logical"){
+
+        }
+      } else if(index !== aRRLength-1) {
+        alert('validate above and below');
         //validate both above and below
-        aboveOperatorGroup = aRR[index - 1].operatorValue.operatorGroup;
-        belowOperatorGroup = aRR[index + 1].operatorValue.operatorGroup; //validate arithmetic above and below
+        //validate arithmetic above and below
         //validate relational above and below
         //validate logical above and below
+        if(currentOperatorGroup==="arithmetic"){
+
+        }else if(currentOperatorGroup==="relational"){
+
+        }else if(currentOperatorGroup==="logical"){
+
+        }
+         belowOperatorGroup = aRR[index + 1].operatorValue.operatorGroup;
+        aboveOperatorGroup = aRR[index - 1].operatorValue.operatorGroup;
+
+        error =
+          error ||
+          operatorTable.arithmeticBelow.indexOf(belowOperatorGroup) !== -1;
+        //validate relational below
+        error =
+          error ||
+          operatorTable.relationalBelow.indexOf(belowOperatorGroup) !== -1;
+        //validate logical below
+        error =
+          error ||
+          operatorTable.logicalBelow.indexOf(belowOperatorGroup) !== -1;
+        //validate arithmetic above
+        error =
+          error ||
+          operatorTable.arithmeticAbove.indexOf(aboveOperatorGroup) !== -1;
+        //validate relational above
+        error =
+          error ||
+          operatorTable.relationalAbove.indexOf(aboveOperatorGroup) !== -1;
+        //validate logical above
+        error =
+          error ||
+          operatorTable.logicalAbove.indexOf(aboveOperatorGroup) !== -1;
       }
     }
+
     validatedObj['errorOperator'] = error;
     returnArr.push(validatedObj);
   });
