@@ -7,23 +7,13 @@ import Button from '@mui/material/Button';
 import Autocomplete from '@mui/material/Autocomplete';
 import update from 'immutability-helper';
 
-const operatorTable = {
-  arithmeticAbove: ['arithmetic', 'relational'],
-  arithmeticBelow: ['arithmetic'],
-  relationalAbove: ['logical'],
-  relationalBelow: ['arithmetic', 'logical'],
-  logicalAbove: ['relational'],
-  logicalBelow: ['relational'],
-};
 const validateOperatorParing = (aRR) => {
-  console.log('validation ARR=', aRR);
   let returnArr = [];
   let aRRLength = aRR.length;
   let aboveOperatorGroup = '';
   let belowOperatorGroup = '';
   aRR.forEach((obj, index) => {
     let validatedObj = { ...obj };
-    console.log('validatedObj=', validatedObj);
     let error = false;
     let currentOperatorGroup = obj.operatorValue.operatorGroup;
     if (aRRLength > 2) {
@@ -116,6 +106,7 @@ const basicObjectStructure = {
   },
   errorOperator: false,
 };
+
 const LogicBuilderComponent = (props) => {
   let [logicDesign, setLogicDesign] = useState([
     { ...basicObjectStructure, SelectedRow: true },
@@ -132,98 +123,84 @@ const LogicBuilderComponent = (props) => {
       operatorGroup: 'relational',
       label: 'Less than',
       value: '<',
-      errorOperator: false,
     },
     {
       category: 'Relational operators',
       operatorGroup: 'relational',
       label: 'Less than or equal to',
       value: '<=',
-      errorOperator: false,
     },
     {
       category: 'Relational operators',
       operatorGroup: 'relational',
       label: 'Equal to',
       value: '=',
-      errorOperator: false,
     },
     {
       category: 'Relational operators',
       operatorGroup: 'relational',
       label: 'Greater than',
       value: '>',
-      errorOperator: false,
     },
     {
       category: 'Relational operators',
       operatorGroup: 'relational',
       label: 'Greater than or equal to',
       value: '>=',
-      errorOperator: false,
     },
     {
       category: 'Relational operators',
       operatorGroup: 'relational',
       label: 'Not equal to',
       value: '!=',
-      errorOperator: false,
     },
     {
       category: 'Arithmetic operators',
       operatorGroup: 'arithmetic',
       label: 'DaysBetween',
       value: 'DaysBetween',
-      errorOperator: false,
     },
     {
       category: 'Arithmetic operators',
       operatorGroup: 'arithmetic',
       label: 'YearsBetween',
       value: 'YearsBetween',
-      errorOperator: false,
     },
     {
       category: 'Arithmetic operators',
       operatorGroup: 'arithmetic',
       label: 'Find in previous repeat groups',
       value: 'Find in previous repeat groups',
-      errorOperator: false,
     },
     {
       category: 'Arithmetic operators',
       operatorGroup: 'arithmetic',
       label: 'Go to repeat group and retrieve field value',
       value: 'Go to repeat group and retrieve field value',
-      errorOperator: false,
     },
     {
       category: 'Arithmetic operators',
       operatorGroup: 'arithmetic',
       label: 'Add',
       value: '+',
-      errorOperator: false,
     },
     {
       category: 'Arithmetic operators',
       operatorGroup: 'arithmetic',
       label: 'Subtract',
       value: '-',
-      errorOperator: false,
     },
     {
       category: 'Logical operators',
       operatorGroup: 'logical',
       label: 'AND',
       value: 'and',
-      errorOperator: false,
     },
     {
       category: 'Logical operators',
       operatorGroup: 'logical',
       label: 'OR',
       value: 'or',
-      errorOperator: false,
     },
     {
       category: 'Logical operators',
@@ -259,7 +236,6 @@ const LogicBuilderComponent = (props) => {
     idx = idx == -1 ? arr.length : idx + 1;
     arr.splice(idx, 0, obj);
     setLogicDesign(validateOperatorParing(arr));
-    console.log(arr);
   };
 
   let onClickRemoveRow = () => {
@@ -283,7 +259,6 @@ const LogicBuilderComponent = (props) => {
   };
 
   let handleSelectRowChange = (e, v, index) => {
-    console.log(v, index);
     let arr = [];
     logicDesign.forEach((obj, i) => {
       let tmpobj = { ...obj };
@@ -294,12 +269,10 @@ const LogicBuilderComponent = (props) => {
       }
       arr.push(tmpobj);
     });
-    console.log(arr);
     setLogicDesign(arr);
   };
 
   let handleParameterType = (e, v, index) => {
-    console.log(v, index);
     logicDesign = update(logicDesign, {
       [index]: { parameterType: { $set: v } },
     });
@@ -322,15 +295,12 @@ const LogicBuilderComponent = (props) => {
   let onChangeGrouiId = (e, index) => {
     let updateCondition = true;
     let value = Number(e.target.value);
-    console.log(typeof value);
     let previousValue = logicDesign[index - 1]
       ? logicDesign[index - 1].groupId
       : 0;
     let upcomingValue = logicDesign[index + 1]
       ? logicDesign[index + 1].groupId
       : value;
-    console.log(previousValue, '----', value, '---', upcomingValue);
-    console.log(previousValue <= value <= upcomingValue);
     if (updateCondition && logicDesign.length - 1 == index) {
       updateCondition =
         previousValue <= value &&
@@ -338,7 +308,7 @@ const LogicBuilderComponent = (props) => {
     } else {
       updateCondition = previousValue <= value && value <= upcomingValue;
     }
-    if (updateCondition) {
+    if (updateCondition && value !== 0) {
       logicDesign = update(logicDesign, {
         [index]: { groupId: { $set: e.target.value } },
       });
