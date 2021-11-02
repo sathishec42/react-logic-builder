@@ -28,43 +28,43 @@ const validateOperatorParing = (aRR) => {
     let currentOperatorGroup = obj.operatorValue.operatorGroup;
     //validate arithmetic below
     if (aRRLength > 2) {
-      alert(index)
+      alert(index);
       if (index === 0) {
         alert('validate only below');
-        if(currentOperatorGroup==="arithmetic"){
-
-        }else if(currentOperatorGroup==="relational"){
-
-        }else if(currentOperatorGroup==="logical"){
-
+        belowOperatorGroup = aRR[index + 1].operatorValue.operatorGroup;
+        if (currentOperatorGroup === 'arithmetic') {
+          error = error || ['logical'].indexOf(belowOperatorGroup) !== -1;
+        } else if (currentOperatorGroup === 'relational') {
+          error =
+            error ||
+            ['arithmetic', 'relational'].indexOf(belowOperatorGroup) !== -1;
+        } else if (currentOperatorGroup === 'logical') {
+          error =
+            error ||
+            ['arithmetic', 'logical'].indexOf(belowOperatorGroup) !== -1;
         }
       } else if (index === aRRLength - 2) {
+        aboveOperatorGroup = aRR[index - 1].operatorValue.operatorGroup;
         alert('validate only above');
         //validate only above
         //validate arithmetic above
         //validate relational above
         //validate logical above
-        if(currentOperatorGroup==="arithmetic"){
-
-        }else if(currentOperatorGroup==="relational"){
-
-        }else if(currentOperatorGroup==="logical"){
-
+        if (currentOperatorGroup === 'arithmetic') {
+        } else if (currentOperatorGroup === 'relational') {
+        } else if (currentOperatorGroup === 'logical') {
         }
-      } else if(index !== aRRLength-1) {
+      } else if (index !== aRRLength - 1) {
         alert('validate above and below');
         //validate both above and below
         //validate arithmetic above and below
         //validate relational above and below
         //validate logical above and below
-        if(currentOperatorGroup==="arithmetic"){
-
-        }else if(currentOperatorGroup==="relational"){
-
-        }else if(currentOperatorGroup==="logical"){
-
+        if (currentOperatorGroup === 'arithmetic') {
+        } else if (currentOperatorGroup === 'relational') {
+        } else if (currentOperatorGroup === 'logical') {
         }
-         belowOperatorGroup = aRR[index + 1].operatorValue.operatorGroup;
+        belowOperatorGroup = aRR[index + 1].operatorValue.operatorGroup;
         aboveOperatorGroup = aRR[index - 1].operatorValue.operatorGroup;
 
         error =
