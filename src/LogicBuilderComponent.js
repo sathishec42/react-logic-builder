@@ -28,9 +28,7 @@ const validateOperatorParing = (aRR) => {
     let currentOperatorGroup = obj.operatorValue.operatorGroup;
     //validate arithmetic below
     if (aRRLength > 2) {
-      alert(index);
       if (index === 0) {
-        alert('validate only below');
         belowOperatorGroup = aRR[index + 1].operatorValue.operatorGroup;
         if (currentOperatorGroup === 'arithmetic') {
           error = error || ['logical'].indexOf(belowOperatorGroup) !== -1;
@@ -45,7 +43,6 @@ const validateOperatorParing = (aRR) => {
         }
       } else if (index === aRRLength - 2) {
         aboveOperatorGroup = aRR[index - 1].operatorValue.operatorGroup;
-        alert('validate only above');
         //validate only above
         //validate arithmetic above
         //validate relational above
@@ -64,7 +61,6 @@ const validateOperatorParing = (aRR) => {
       } else if (index !== aRRLength - 1) {
         belowOperatorGroup = aRR[index + 1].operatorValue.operatorGroup;
         aboveOperatorGroup = aRR[index - 1].operatorValue.operatorGroup;
-        alert('validate above and below');
         //validate both above and below
         //validate arithmetic above and below
         //validate relational above and below
