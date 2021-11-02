@@ -26,9 +26,12 @@ const validateOperatorParing = (aRR) => {
     console.log('validatedObj=', validatedObj);
     let error = false;
     let currentOperatorGroup = obj.operatorValue.operatorGroup;
-    //validate arithmetic below
     if (aRRLength > 2) {
       if (index === 0) {
+        //validate only below
+        //validate arithmetic below
+        //validate relational below
+        //validate logical below
         belowOperatorGroup = aRR[index + 1].operatorValue.operatorGroup;
         if (currentOperatorGroup === 'arithmetic') {
           error = error || ['logical'].indexOf(belowOperatorGroup) !== -1;
@@ -89,8 +92,13 @@ const validateOperatorParing = (aRR) => {
     validatedObj['errorOperator'] = error;
     returnArr.push(validatedObj);
   });
-  console.log('ofter ARR=', returnArr);
-
+  let tmpFlag = false;
+  returnArr.forEach((o, i) => {
+    if (o.errorOperator === true && !tmpFlag) {
+      tmpFlag = true;
+      o.errorOperator = false;
+    }
+  });
   return returnArr;
 };
 
