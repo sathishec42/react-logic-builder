@@ -7,13 +7,28 @@ import Button from '@mui/material/Button';
 import Autocomplete from '@mui/material/Autocomplete';
 import update from 'immutability-helper';
 
+const operatorTable = {
+  arithmeticAbove: ['arithmetic', 'relational'],
+  arithmeticBelow: ['arithmetic'],
+  relationalAbove: ['logical'],
+  relationalBelow: ['arithmetic', 'logical'],
+  logicalAbove: ['relational'],
+  logicalBelow: ['relational'],
+};
 const validateOperatorParing = (aRR) => {
+  console.log('validation ARR=', aRR);
+  let returnArr = [];
   let aRRLength = aRR.length;
   // let validateAbove=true;
   // let validateBelow=true;
   aRR.forEach((obj, index) => {
-    let operator = obj.operatorValue;
-    let operatorGroup = obj.operatorGroup;
+    let validatedObj = { ...obj };
+    console.log('validatedObj=', validatedObj);
+    let error = false;
+    let aboveOperatorGroup = '';
+    let currentOperatorGroup = obj.operatorValue.operatorGroup;
+    let belowOperatorGroup = '';
+    error = true;
     if (index === 0) {
       // no validation required
     } else if (index === 1) {
@@ -23,26 +38,41 @@ const validateOperatorParing = (aRR) => {
     } else if (index > 2) {
       if (index === 0) {
         //validate only below
+        belowOperatorGroup = aRR[index + 1].operatorValue.operatorGroup;
         //validate arithmetic below
+        error =
+          error ||
+          operatorTable.arithmeticBelow.findIndex(currentOperatorGroup) != -1;
         //validate relational below
+        error =
+          error ||
+          operatorTable.operationalBelow.findIndex(currentOperatorGroup) != -1;
         //validate logical below
+        error =
+          error ||
+          operatorTable.logicalBelow.findIndex(currentOperatorGroup) != -1;
       }
       if (index === aRRLength - 1) {
         //validate only above
+        aboveOperatorGroup = aRR[index - 1].operatorValue.operatorGroup;
         //validate arithmetic above
         //validate relational above
         //validate logical above
       }
       if (index !== aRRLength - 1 && index !== 0) {
         //validate both above and below
-        //validate arithmetic above and below
+        aboveOperatorGroup = aRR[index - 1].operatorValue.operatorGroup;
+        belowOperatorGroup = aRR[index + 1].operatorValue.operatorGroup; //validate arithmetic above and below
         //validate relational above and below
         //validate logical above and below
       }
     }
+    validatedObj['errorOperator'] = error;
+    returnArr.push(validatedObj);
   });
+  console.log('ofter ARR=', returnArr);
 
-  return aRR;
+  return returnArr;
 };
 
 const basicObjectStructure = {
@@ -51,7 +81,13 @@ const basicObjectStructure = {
   parameterType: 'variable',
   constantValue: '',
   patameterValue: { id: 'age', label: 'Age' },
-  operatorValue: { value: 'and', label: 'And', errorOperator: true },
+  operatorValue: {
+    category: 'Relational operators',
+    operatorGroup: 'relational',
+    label: 'Equal to',
+    value: '=',
+  },
+  errorOperator: false,
 };
 const LogicBuilderComponent = (props) => {
   let [logicDesign, setLogicDesign] = useState([
@@ -76,6 +112,13 @@ const LogicBuilderComponent = (props) => {
       operatorGroup: 'relational',
       label: 'Less than or equal to',
       value: '<=',
+      errorOperator: false,
+    },
+    {
+      category: 'Relational operators',
+      operatorGroup: 'relational',
+      label: 'Equal to',
+      value: '=',
       errorOperator: false,
     },
     {
@@ -188,7 +231,7 @@ const LogicBuilderComponent = (props) => {
     let idx = arr.findIndex((obj) => obj.SelectedRow);
     idx = idx == -1 ? arr.length : idx + 1;
     arr.splice(idx, 0, obj);
-    setLogicDesign(arr);
+    setLogicDesign(validateOperatorParing(arr));
     console.log(arr);
   };
 
@@ -279,7 +322,7 @@ const LogicBuilderComponent = (props) => {
     logicDesign = update(logicDesign, {
       [index]: { operatorValue: { $set: value } },
     });
-    setLogicDesign(logicDesign);
+    setLogicDesign(validateOperatorParing(logicDesign));
   };
   return (
     <div>
@@ -388,8 +431,8 @@ const LogicBuilderComponent = (props) => {
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        error={ldObj.operatorValue.errorOperator}
-                        label={ldObj.operatorValue.errorOperator ? 'Error' : ''}
+                        error={ldObj.errorOperator}
+                        label={ldObj.errorOperator ? 'Error' : ''}
                       />
                     )}
                   />
