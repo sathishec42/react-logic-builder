@@ -51,45 +51,42 @@ const validateOperatorParing = (aRR) => {
         //validate relational above
         //validate logical above
         if (currentOperatorGroup === 'arithmetic') {
+          error =
+            error ||
+            ['relational', 'logical'].indexOf(aboveOperatorGroup) !== -1;
         } else if (currentOperatorGroup === 'relational') {
+          error = error || ['relational'].indexOf(aboveOperatorGroup) !== -1;
         } else if (currentOperatorGroup === 'logical') {
+          error =
+            error ||
+            ['arithmetic', 'logical'].indexOf(aboveOperatorGroup) !== -1;
         }
       } else if (index !== aRRLength - 1) {
+        belowOperatorGroup = aRR[index + 1].operatorValue.operatorGroup;
+        aboveOperatorGroup = aRR[index - 1].operatorValue.operatorGroup;
         alert('validate above and below');
         //validate both above and below
         //validate arithmetic above and below
         //validate relational above and below
         //validate logical above and below
         if (currentOperatorGroup === 'arithmetic') {
+          error =
+            error ||
+            ['relational', 'logical'].indexOf(aboveOperatorGroup) !== -1;
+          error = error || ['logical'].indexOf(belowOperatorGroup) !== -1;
         } else if (currentOperatorGroup === 'relational') {
+          error = error || ['relational'].indexOf(aboveOperatorGroup) !== -1;
+          error =
+            error ||
+            ['arithmetic', 'relational'].indexOf(belowOperatorGroup) !== -1;
         } else if (currentOperatorGroup === 'logical') {
+          error =
+            error ||
+            ['arithmetic', 'logical'].indexOf(aboveOperatorGroup) !== -1;
+          error =
+            error ||
+            ['arithmetic', 'logical'].indexOf(belowOperatorGroup) !== -1;
         }
-        belowOperatorGroup = aRR[index + 1].operatorValue.operatorGroup;
-        aboveOperatorGroup = aRR[index - 1].operatorValue.operatorGroup;
-
-        error =
-          error ||
-          operatorTable.arithmeticBelow.indexOf(belowOperatorGroup) !== -1;
-        //validate relational below
-        error =
-          error ||
-          operatorTable.relationalBelow.indexOf(belowOperatorGroup) !== -1;
-        //validate logical below
-        error =
-          error ||
-          operatorTable.logicalBelow.indexOf(belowOperatorGroup) !== -1;
-        //validate arithmetic above
-        error =
-          error ||
-          operatorTable.arithmeticAbove.indexOf(aboveOperatorGroup) !== -1;
-        //validate relational above
-        error =
-          error ||
-          operatorTable.relationalAbove.indexOf(aboveOperatorGroup) !== -1;
-        //validate logical above
-        error =
-          error ||
-          operatorTable.logicalAbove.indexOf(aboveOperatorGroup) !== -1;
       }
     }
 
